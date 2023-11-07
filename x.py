@@ -35,9 +35,12 @@ def Preprocess(imag):
     return imag
 
 def ProjectEdges(img:Image, edges:Image):
-    #blend both images
-    res = Image.blend(img, edges,0.3)
-    return res
+    #project edges into img
+    return Image.blend(img, edges, 0.3)
+
+
+
+
     
 
 
@@ -50,8 +53,9 @@ def ProjectEdges(img:Image, edges:Image):
 
 def EdgeDetectionUsingCanny(LL):
         #canny algorithm in the wavelet coefficients
-        image = cv2.imread('images.jpg')
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        #create Matlike using LL
+    
+        gray = cv2.cvtColor(LL, cv2.COLOR_BGR2GRAY)
         blur = cv2.GaussianBlur(gray, (5, 5), 0)
         sobelx = cv2.Sobel(blur, cv2.CV_64F, 1, 0, ksize=5) 
         sobely = cv2.Sobel(blur, cv2.CV_64F, 0, 1, ksize=5)
@@ -83,7 +87,7 @@ def MethodReplacingBy0(img):
    
 
 def main():
-    img = Image.open('images.jpg')
+    img = Image.open("img.png")
     img = img.convert("L")
     
     img1 = MethodReplacingBy0(img)
