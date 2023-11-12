@@ -4,6 +4,21 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import cv2
+import Canny
+
+def Method2_1_1(img):
+    return MethodReplacingBy0(img)
+
+def Method2_1_2(img):
+    img = np.array(img)
+    LL, LH,HL,HH = wavelet_transform(img)
+    edge = EdgeDetectionUsingCanny(LL)
+    cv2.imwrite('CannyEdgeDetection.png', edge)
+    img2 = inverse_wavelet_transform(edge,LH,HL,HH)
+    img2 = Image.fromarray(np.uint8(img2))
+    img2 = img2.convert("L")
+
+    img2.save("CannyBlended.jpg")
 
 def wavelet_transform(img):
     coeffs = pywt.dwt2(img, 'haar')
@@ -39,36 +54,14 @@ def ProjectEdges(img:Image, edges:Image):
     return Image.blend(img, edges, 0.3)
 
 
-
-
-    
-
-
-
-
-
-
-
-
-
 def EdgeDetectionUsingCanny(LL):
-        #canny algorithm in the wavelet coefficients
-        #create Matlike using LL
-    
-        gray = cv2.cvtColor(LL, cv2.COLOR_BGR2GRAY)
-        blur = cv2.GaussianBlur(gray, (5, 5), 0)
-        sobelx = cv2.Sobel(blur, cv2.CV_64F, 1, 0, ksize=5) 
-        sobely = cv2.Sobel(blur, cv2.CV_64F, 0, 1, ksize=5)
-        #Compute the gradient magnitude and direction for each pixel in the image.
-        gradmag = np.sqrt(sobelx**2 + sobely**2)
-        graddir = np.arctan2(sobely, sobelx)
-        #Apply a non-maximum suppression step to the gradient magnitude image
-        mag, ang = cv2.cartToPolar(gradmag, graddir, angleInDegrees=True)
-        #Threshold the gradient magnitude image to produce a binary edge map.
-        thresh = 30
-        binary = np.uint8((ang < thresh))
-        #Perform hysteresis thresholding on the binary edge map.
-        binary = cv2.bitwise_not(binary)
+        LL = np.array(np.uint8(LL))
+        edge = Canny.CannyEdge(LL)
+        return edge
+       
+
+
+
    
 
 #Approximation coefficients replaced by 0
@@ -89,13 +82,18 @@ def MethodReplacingBy0(img):
 def main():
     img = Image.open("img.png")
     img = img.convert("L")
-    
-    img1 = MethodReplacingBy0(img)
-    img1.save("MethodReplacingBy0.png")
 
-    img2 = ProjectEdges(img, img1)
-    #save img2
-    img2.save("Blended.png")
+    result1 = Method2_1_1(img)
+    result1.save("MethodReplacingBy0.png")
+
+    # img2 = ProjectEdges(img, img1)
+    # #save img2
+    # img2.save("Blended.png")
+
+    Method2_1_2(img)
+
+
+    
 
 
 if __name__ =="__main__":
