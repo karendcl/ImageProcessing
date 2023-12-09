@@ -11,16 +11,17 @@ def ProjectEdges(img_orig, edges):
 
 def CannyEdge(img):
     # Setting parameter values 
-    t_lower = 200  # Lower Threshold 
-    t_upper = 255  # Upper threshold 
+    t_lower = 40  # Lower Threshold 
+    t_upper = 180  # Upper threshold 
   
 # Applying the Canny Edge filter and maintain same size
     edge = cv2.Canny(np.uint8(img), t_lower, t_upper)
    
     return edge
   
-def main(imgsource):
-    img = cv2.imread(imgsource)
+def main(img):
+    img = cv2.imread(img)
+
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     coeffs = pywt.dwt2(gray,'haar')

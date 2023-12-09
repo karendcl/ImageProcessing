@@ -13,7 +13,14 @@ def ProjectEdges(img_orig, edges):
 
 def main(imgsource):
 
+    #convert from ndarray to matlike
     img = cv2.imread(imgsource)
+
+
+    gray = img
+    
+    
+    
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     coeffs = pywt.dwt2(gray,'haar')
@@ -23,7 +30,7 @@ def main(imgsource):
     cA = np.zeros_like(cA)
 
     reconstructed = pywt.idwt2((None,(cH,cV,cD)),'haar')
-    reconstructed = np.clip(reconstructed,0,300)
+    reconstructed = np.clip(reconstructed,0,255)
     proj = ProjectEdges(img, reconstructed)
     reconstructed = reconstructed.astype(np.uint8)
     reconstructed = cv2.cvtColor(reconstructed, cv2.COLOR_BGR2BGRA)
